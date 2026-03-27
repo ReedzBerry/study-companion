@@ -17,36 +17,36 @@ def initialise_database():
 
     # Courses Table
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS courses(
+        CREATE TABLE IF NOT EXISTS Courses(
             course_id INTEGER PRIMARY KEY AUTOINCREMENT,
             course_name TEXT NOT NULL,
-            course_code TEXT NOT NULL UNIQUE,
+            course_code TEXT UNIQUE,
             created_at TEXT NOT NULL 
             )
         """)
     
     # Tasks table
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS tasks(
+        CREATE TABLE IF NOT EXISTS Tasks(
             task_id INTEGER PRIMARY KEY AUTOINCREMENT,
             course_id INTEGER,
             title TEXT NOT NULL,
             description TEXT,
             due_date TEXT NOT NULL,
             priority TEXT NOT NULL,
-            estimated_hours INTEGER,
+            estimated_hours REAL,
             status TEXT NOT NULL DEFAULT 'Not Started',
-            completion_status TEXT,
+            completion_date TEXT,
             created_at TEXT NOT NULL,
             updated_at TEXT,
-            FOREIGN KEY (course_id) REFERENCES courses(course_id) 
+            FOREIGN KEY (course_id) REFERENCES Courses(course_id) 
                 ON DELETE SET NULL
             )
         """)
     
     # Weekly Plans table
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS weekly_plans(
+        CREATE TABLE IF NOT EXISTS Weekly_Plans(
             plan_id INTEGER PRIMARY KEY AUTOINCREMENT,
             week_start TEXT NOT NULL,
             week_end TEXT NOT NULL,
@@ -56,7 +56,7 @@ def initialise_database():
     
     # Plans Items table
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS plan_items(
+        CREATE TABLE IF NOT EXISTS Plan_Items(
             plan_item_id INTEGER PRIMARY KEY AUTOINCREMENT,
             plan_id INTEGER NOT NULL,
             task_id INTEGER NOT NULL,
