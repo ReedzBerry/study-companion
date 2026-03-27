@@ -53,6 +53,7 @@ def get_tasks_by_course(course_id):
         SELECT task_id, course_id, task_name, due_date,
         task_description, priority, estimated_hours, 
         status, completion_date, created_at, updated_at
+        FROM Tasks
         WHERE course_id = ?
         ORDER BY due_date ASC
     """, (course_id,))
@@ -65,7 +66,9 @@ def get_overdue_tasks():
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("""
-        SELECT task_id, course_id, task_name, due_date, description, created_at
+        SELECT task_id, course_id, task_name, due_date, 
+        task_description, priority, estimated_hours, 
+        status, completion_date, created_at, updated_at
         FROM Tasks
         WHERE due_date < date('now') AND status != 'Done'
         ORDER BY due_date ASC
@@ -74,7 +77,7 @@ def get_overdue_tasks():
     conn.close()
     return rows
 
-def update_task(task_id, task_name=None, due_date=None, description=None, priority=None, estimated_hours=None, status=None):
+def update_task(task_id, task_name=None, due_date=None, task_description=None, priority=None, estimated_hours=None, status=None):
     """Update an existing task."""
     conn = get_connection()
     cursor = conn.cursor()
@@ -83,7 +86,7 @@ def update_task(task_id, task_name=None, due_date=None, description=None, priori
         SET task_name = ?, due_date = ?, task_description = ?,
         priority = ?, estimated_hours = ?, status = ?, updated_at = ? 
         WHERE task_id = ?
-    """, (task_name, due_date, description, priority, estimated_hours, status, datetime.now().isoformat(), task_id))
+    """, (task_name, due_date, task_description, priority, estimated_hours, status, datetime.now().isoformat(), task_id))
     conn.commit()
     conn.close()
 
