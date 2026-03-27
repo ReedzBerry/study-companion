@@ -30,8 +30,8 @@ def initialise_database():
         CREATE TABLE IF NOT EXISTS Tasks(
             task_id INTEGER PRIMARY KEY AUTOINCREMENT,
             course_id INTEGER,
-            title TEXT NOT NULL,
-            description TEXT,
+            task_name TEXT NOT NULL,
+            task_description TEXT,
             due_date TEXT NOT NULL,
             priority TEXT NOT NULL,
             estimated_hours REAL,
