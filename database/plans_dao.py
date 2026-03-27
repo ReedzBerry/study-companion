@@ -73,8 +73,7 @@ def update_plan_item(plan_item_id, scheduled_day=None, hours_planned=None):
     """Update an existing plan item."""
     conn = get_connection()
     cursor = conn.cursor()
-    if scheduled_day is not None and hours_planned is not None:
-        cursor.execute("""
+    cursor.execute("""
             UPDATE Plan_Items
             SET scheduled_day = ?, hours_planned = ?
             WHERE plan_item_id = ?
