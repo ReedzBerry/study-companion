@@ -5,6 +5,8 @@ from PySide6.QtWidgets import (
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont
 
+from ui.course_view import CourseView
+
 # Colour Palette
 COLOURS = {
     "background":     "#1e1e2e",
@@ -129,7 +131,7 @@ class MainWindow(QMainWindow):
         self.stack = QStackedWidget()
         self.stack.addWidget(QLabel("Dashboard — coming soon"))
         self.stack.addWidget(QLabel("Tasks — coming soon"))
-        self.stack.addWidget(QLabel("Courses — coming soon"))
+        self.stack.addWidget(CourseView())
         self.stack.addWidget(QLabel("Planner — coming soon"))
 
         layout.addWidget(self.stack)
