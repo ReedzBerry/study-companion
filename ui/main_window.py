@@ -8,7 +8,7 @@ from PySide6.QtGui import QFont
 from ui.course_view import CourseView
 from ui.task_view import TaskView
 from ui.planner_view import PlannerView
-
+from ui.dashboard_view import DashboardView
 
 # Colour Palette
 COLOURS = {
@@ -85,6 +85,8 @@ class MainWindow(QMainWindow):
         main_layout.addWidget(self._build_sidebar())
         main_layout.addWidget(self._build_content_area())
 
+        self._navigate(0)  # Default to dashboard
+
     def _build_sidebar(self):
         sidebar = QWidget()
         sidebar.setObjectName("sidebar")
@@ -132,7 +134,7 @@ class MainWindow(QMainWindow):
 
         # Stacked widget holds all views
         self.stack = QStackedWidget()
-        self.stack.addWidget(QLabel("Dashboard — coming soon"))
+        self.stack.addWidget(DashboardView())
         self.stack.addWidget(TaskView())
         self.stack.addWidget(CourseView())
         self.stack.addWidget(PlannerView())
@@ -144,3 +146,6 @@ class MainWindow(QMainWindow):
         self.stack.setCurrentIndex(index)
         for i, btn in enumerate(self.nav_buttons):
             btn.setChecked(i == index)
+        # Refresh dashboard when navigating to it
+        if index == 0:
+            self.stack.widget(0)._load_dashboard()
