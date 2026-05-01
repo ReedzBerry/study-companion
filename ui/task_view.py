@@ -406,6 +406,7 @@ class TaskDialog(QDialog):
 
     def get_values(self):
         return {
+            "course_id": self.course_combo.currentData(),
             "task_name": self.name_input.text().strip(),
             "due_date": self.due_date_input.date().toString("yyyy-MM-dd"),
             "priority": self.priority_combo.currentText(),

@@ -77,16 +77,17 @@ def get_overdue_tasks():
     conn.close()
     return rows
 
-def update_task(task_id, task_name=None, due_date=None, task_description=None, priority=None, estimated_hours=None, status=None):
+def update_task(task_id, task_name=None, due_date=None, task_description=None, priority=None, estimated_hours=None, status=None, course_id=None):
     """Update an existing task."""
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("""
         UPDATE Tasks
         SET task_name = ?, due_date = ?, task_description = ?,
-        priority = ?, estimated_hours = ?, status = ?, updated_at = ? 
+        priority = ?, estimated_hours = ?, status = ?, 
+        course_id = ?, updated_at = ?
         WHERE task_id = ?
-    """, (task_name, due_date, task_description, priority, estimated_hours, status, datetime.now().isoformat(), task_id))
+    """, (task_name, due_date, task_description, priority, estimated_hours, status, course_id, datetime.now().isoformat(), task_id))
     conn.commit()
     conn.close()
 

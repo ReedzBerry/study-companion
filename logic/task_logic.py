@@ -66,7 +66,7 @@ def get_overdue_tasks():
     """Retrieve all overdue tasks."""
     return tasks_dao.get_overdue_tasks()
 
-def update_task(task_id, task_name=None, due_date=None, task_description=None, priority=None, estimated_hours=None,  status=None):
+def update_task(task_id, task_name=None, due_date=None, task_description=None, priority=None, estimated_hours=None, status=None, course_id=None):
     """Validate and update an existing task."""
     if not task_id:
         return False, "Task ID is required."
@@ -104,7 +104,7 @@ def update_task(task_id, task_name=None, due_date=None, task_description=None, p
     task_name = task_name.strip() if task_name else None
     task_description = task_description.strip() if task_description else None
 
-    tasks_dao.update_task(task_id, task_name, due_date, task_description, priority, estimated_hours,  status)
+    tasks_dao.update_task(task_id, task_name, due_date, task_description, priority, estimated_hours, status, course_id)
     return True, None
 
 def delete_task(task_id):
