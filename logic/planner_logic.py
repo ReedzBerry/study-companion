@@ -19,18 +19,16 @@ def create_weekly_plan(week_start):
     plan_id = plans_dao.create_weekly_plan(parsed_date.isoformat(), week_end_date.isoformat())
     return plan_id, None
 
-def get_or_create_plan():
+def get_or_create_plan(week_start):
     """Get the current week's plan or create one if it doesn't exist."""
-    today = datetime.today().date()
-    week_start = today - timedelta(days=today.weekday())  # Get the Monday of the current week
-    existing_plan = plans_dao.get_plan_by_week(week_start.isoformat())
+    existing_plan = plans_dao.get_plan_by_week(week_start)
     
     if existing_plan:
         return existing_plan, None
     
-    return create_weekly_plan(week_start.isoformat())
+    return create_weekly_plan(week_start)
 
-def add_plan_items(plan_id, task_id, scheduled_day, hours_planned):
+def add_plan_item(plan_id, task_id, scheduled_day, hours_planned):
     """Validate and add a task to a weekly plan."""
     if not plan_id:
         return None, "Plan ID is required."

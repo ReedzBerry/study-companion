@@ -7,6 +7,8 @@ from PySide6.QtGui import QFont
 
 from ui.course_view import CourseView
 from ui.task_view import TaskView
+from ui.planner_view import PlannerView
+
 
 # Colour Palette
 COLOURS = {
@@ -133,7 +135,7 @@ class MainWindow(QMainWindow):
         self.stack.addWidget(QLabel("Dashboard — coming soon"))
         self.stack.addWidget(TaskView())
         self.stack.addWidget(CourseView())
-        self.stack.addWidget(QLabel("Planner — coming soon"))
+        self.stack.addWidget(PlannerView())
 
         layout.addWidget(self.stack)
         return content_area
