@@ -151,7 +151,7 @@ class TaskView(QWidget):
         self.setStyleSheet(VIEW_STYLE)
         self.current_filter = "All"
         self._build_ui()
-        self._load_tasks()
+        self._load_tasks("All")
 
     def _build_ui(self):
         layout = QVBoxLayout(self)
@@ -178,7 +178,7 @@ class TaskView(QWidget):
             btn = QPushButton(label)
             btn.setObjectName("filter_button")
             btn.setCheckable(True)
-            btn.clicked.connect(lambda checked, l=label: self._apply_filter(1))
+            btn.clicked.connect(lambda checked, l=label: self._apply_filter(l))
             filter_layout.addWidget(btn)
             self.filter_buttons.append(btn)
         filter_layout.addStretch()
@@ -200,7 +200,7 @@ class TaskView(QWidget):
         self.table.verticalHeader().setVisible(False)
         layout.addWidget(self.table)
 
-    def _load_tasks(self, filter_status=None):
+    def _load_tasks(self, filter_status="All"):
         """Load tasks from the database and populate the table."""
         all_tasks = task_logic.get_all_tasks()
         courses = course_logic.get_all_courses()
