@@ -212,6 +212,15 @@ class DashboardView(QWidget):
             widget = item.widget()
             if widget:
                 widget.setParent(None)
+            elif item.layout():
+                # Clear nested layouts if any (like in workload bars)
+                nested = item.layout()
+                while nested.count():
+                    nested_item = nested.takeAt(0)
+                    nested_widget = nested_item.widget()
+                    if nested_widget:
+                        nested_widget.setParent(None)
+                
 
     def _load_dashboard(self):
         """Load all dashboard data."""
