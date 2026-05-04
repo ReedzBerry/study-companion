@@ -379,4 +379,4 @@ class DashboardView(QWidget):
             days_layout.addWidget(day_widget, 1)
 
         layout.addLayout(days_layout)
-        #layout.addStretch()
+        layout.addStretch()
