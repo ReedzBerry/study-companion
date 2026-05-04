@@ -13,7 +13,7 @@ def get_upcoming_tasks():
 
     upcoming = []
     for task in all_tasks:
-        due_date = task[4]  #due_date is index 4
+        due_date = task[3]  #due_date is index 3
         status = task[7]  #status is index 7
         if due_date and today_str <= due_date <= seven_days and status != 'Done':
             upcoming.append(task)
@@ -28,7 +28,7 @@ def get_overdue_tasks():
 
     overdue = []
     for task in all_tasks:
-        due_date = task[4]  #due_date is index 4
+        due_date = task[3]  #due_date is index 3
         status = task[7]  #status is index 7
         if due_date and due_date < today and status != 'Done':
             overdue.append(task)
@@ -43,7 +43,7 @@ def get_daily_task_count():
     all_tasks = tasks_dao.get_all_tasks()
 
     for task in all_tasks:
-        due_date = task[4]  #due_date is index 4
+        due_date = task[3]  #due_date is index 4
         status = task[7]  #status is index 7
         if due_date and today.isoformat() <= due_date <= (today + timedelta(days=6)).isoformat() and status != 'Done':
             workload[due_date] += 1
