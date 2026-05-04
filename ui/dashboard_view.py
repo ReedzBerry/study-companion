@@ -37,7 +37,7 @@ VIEW_STYLE = f"""
         padding: 6px 0px;
     }}
     QFrame#card {{
-        background-color: {COLOURS['card']};
+        background-color: {COLOURS['sidebar']};
         border-radius: 8px;
         border: 1px solid {COLOURS['sidebar']};
     }}
@@ -343,8 +343,8 @@ class DashboardView(QWidget):
 
         # Day columns
         days_layout = QHBoxLayout()
-        days_layout.setSpacing(4)
-        days_layout.setContentsMargins(0, 0, 0, 0)
+        days_layout.setContentsMargins(10, 0, 10, 0)
+        days_layout.setSpacing(10)
 
         max_hours = max(workload.values()) if workload else 1
         max_hours = max(max_hours, 1)  # Avoid division by zero
@@ -379,4 +379,4 @@ class DashboardView(QWidget):
             days_layout.addWidget(day_widget, 1)
 
         layout.addLayout(days_layout)
-        layout.addStretch()
+        #layout.addStretch()
