@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import (
     QPushButton, QSizePolicy, QWidget, QVBoxLayout, QHBoxLayout,
-    QLabel, QScrollArea, QFrame, QGridLayout
+    QLabel, QScrollArea, QFrame
 )
 from PySide6.QtCore import Qt
 from datetime import datetime, timedelta
@@ -20,10 +20,33 @@ COLOURS = {
 }
 
 VIEW_STYLE = f"""
-    QWidget {{
+    QWidget#dashboard_content {{
         background-color: {COLOURS['background']};
         color: {COLOURS['text_primary']};
     }}
+    QWidget#dashboard_scroll {{
+        background-color: transparent;
+        border: none;
+    }}
+    QAbstractScrollArea#dashboard_scroll {{
+        background-color: transparent;
+    }}
+
+    QWidget#central_widget{{
+        background-color: {COLOURS['background']};
+        color: {COLOURS['text_primary']};
+    }}
+
+    QWidget#content_area{{
+        background-color: {COLOURS['background']};
+        color: {COLOURS['text_primary']};
+    }}
+
+    QWidget#day_widget {{
+        background-color: transparent;
+        border: none;
+    }}
+
     QLabel#view_title {{
         font-size: 22px;
         font-weight: bold;
@@ -37,7 +60,7 @@ VIEW_STYLE = f"""
         padding: 6px 0px;
     }}
     QFrame#card {{
-        background-color: {COLOURS['sidebar']};
+        background-color: {COLOURS['card']};
         border-radius: 8px;
         border: 1px solid {COLOURS['sidebar']};
     }}
@@ -117,10 +140,12 @@ class DashboardView(QWidget):
         outer_layout.setContentsMargins(0, 0, 0, 0)
 
         scroll = QScrollArea()
+        scroll.setObjectName("dashboard_scroll")
         scroll.setWidgetResizable(True)
         scroll.setFrameShape(QFrame.NoFrame)
 
         content = QWidget()
+        content.setObjectName("dashboard_content")
         layout = QVBoxLayout(content)
         layout.setContentsMargins(30, 30, 30, 30)
         layout.setSpacing(20)
@@ -352,6 +377,7 @@ class DashboardView(QWidget):
         for day in DAYS:
             hours = workload.get(day, 0)
             day_widget = QWidget()
+            day_widget.setObjectName("day_widget")
             day_layout = QVBoxLayout(day_widget)
             day_layout.setContentsMargins(0, 0, 0, 0)
             day_layout.setSpacing(2)
