@@ -46,9 +46,10 @@ VIEW_STYLE = f"""
         background-color: {COLOURS['card']};
         color: {COLOURS['text_primary']};
         border: none;
-        padding: 6px 12px;
+        padding: 10px 12px;
         font-size: 12px;
         border-radius: 4px;
+        min-height: 35px;
     }}
     QPushButton#edit_button:hover {{
         background-color: {COLOURS['accent']};
@@ -57,9 +58,10 @@ VIEW_STYLE = f"""
         background-color: {COLOURS['danger']};
         color: {COLOURS['text_primary']};
         border: none;
-        padding: 6px 12px;
+        padding: 10px 12px;
         font-size: 12px;
         border-radius: 4px;
+        min-height: 35px;
     }}
     QPushButton#delete_button:hover {{
         background-color: #c0392b;
@@ -137,6 +139,7 @@ class CourseView(QWidget):
 
             row = self.table.rowCount()
             self.table.insertRow(row)
+            self.table.setRowHeight(row, 50)
             self.table.setItem(row, 0, QTableWidgetItem(course_name))
             self.table.setItem(row, 1, QTableWidgetItem(course_code))
             self.table.setItem(row, 2, QTableWidgetItem(created_at))
@@ -147,11 +150,11 @@ class CourseView(QWidget):
             actions_layout.setContentsMargins(4,4,4,4)
             actions_layout.setSpacing(6)
 
-            edit_btn = QPushButton("Edit")
+            edit_btn = QPushButton("Edit Course")
             edit_btn.setObjectName("edit_button")
             edit_btn.clicked.connect(lambda checked, cid=course_id, name=course_name, code=course[2]: self._open_edit_dialog(cid, name, code))
 
-            delete_btn = QPushButton("Delete")
+            delete_btn = QPushButton("Delete Course")
             delete_btn.setObjectName("delete_button")
             delete_btn.clicked.connect(lambda checked, cid=course_id, name=course_name: self._delete_course(cid, name))
 
