@@ -121,8 +121,20 @@ def mark_task_completed(task_id):
     """Mark a task as completed."""
     if not task_id:
         return False, "Task ID is required."
-    existing_task = tasks_dao.get_task_by_id(task_id)
-    if not existing_task:
-        return False, "Task not found."
-    tasks_dao.mark_task_completed(task_id)
-    return True, None
+    
+    # Get existing task data first
+    existing_task, error = get_task_by_id(task_id)
+    if error:
+        return False, error
+    
+    result, error = update_task(
+        task_id,
+        task_name=existing_task[2],
+        due_date=existing_task[3],
+        task_description=existing_task[4],
+        priority=existing_task[5],
+        estimated_hours=existing_task[6],
+        status="Done",
+        course_id=existing_task[1]
+    )
+    return result, error

@@ -45,11 +45,14 @@ VIEW_STYLE = f"""
     QPushButton#edit_button {{
         background-color: {COLOURS['card']};
         color: {COLOURS['text_primary']};
-        border: none;
-        padding: 10px 12px;
-        font-size: 12px;
+        min-width: 95px;
+        max-width: 95px;
+        min-height: 32px;
+        max-height: 32px;
+        font-size: 11px;
         border-radius: 4px;
-        min-height: 35px;
+        border: none;
+        padding: 0px;
     }}
     QPushButton#edit_button:hover {{
         background-color: {COLOURS['accent']};
@@ -57,11 +60,14 @@ VIEW_STYLE = f"""
     QPushButton#delete_button {{
         background-color: {COLOURS['danger']};
         color: {COLOURS['text_primary']};
-        border: none;
-        padding: 10px 12px;
-        font-size: 12px;
+        min-width: 95px;
+        max-width: 95px;
+        min-height: 32px;
+        max-height: 32px;
+        font-size: 11px;
         border-radius: 4px;
-        min-height: 35px;
+        border: none;
+        padding: 0px;
     }}
     QPushButton#delete_button:hover {{
         background-color: #c0392b;
@@ -120,7 +126,8 @@ class CourseView(QWidget):
         self.table.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
         self.table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
         self.table.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
-        self.table.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
+        self.table.horizontalHeader().setSectionResizeMode(3, QHeaderView.Fixed)
+        self.table.horizontalHeader().resizeSection(3, 220)
         self.table.setEditTriggers(QTableWidget.NoEditTriggers)
         self.table.setSelectionBehavior(QTableWidget.SelectRows)
         self.table.verticalHeader().setVisible(False)

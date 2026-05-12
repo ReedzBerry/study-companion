@@ -32,6 +32,10 @@ VIEW_STYLE = f"""
         color: {COLOURS['text_primary']};
         padding: 10px 0px;
     }}
+    QWidget#actions_widget {{
+        background-color: transparent;
+        border: none;
+    }}
     QPushButton#add_button {{
         background-color: {COLOURS['accent']};
         color: {COLOURS['text_primary']};
@@ -59,10 +63,13 @@ VIEW_STYLE = f"""
         background-color: {COLOURS['card']};
         color: {COLOURS['text_primary']};
         border: none;
-        padding: 8px 8px;
+        padding: 0px;
         font-size: 10px;
         border-radius: 4px;
-        min-height: 35px;
+        min-height: 30px;
+        max-height: 30px;
+        min-width: 75px;
+        max-width: 75px;
     }}
     QPushButton#edit_button:hover {{
         background-color: {COLOURS['accent']};
@@ -71,10 +78,13 @@ VIEW_STYLE = f"""
         background-color: {COLOURS['warning']};
         color: {COLOURS['text_primary']};
         border: none;
-        padding: 8px 8px;
+        padding: 0px;
         font-size: 10px;
         border-radius: 4px;
-        min-height: 35px;
+        min-height: 30px;
+        max-height: 30px;
+        min-width: 75px;
+        max-width: 75px;
     }}
     QPushButton#start_button:hover {{
         background-color: #d4922a;
@@ -84,10 +94,13 @@ VIEW_STYLE = f"""
         background-color: {COLOURS['success']};
         color: {COLOURS['text_primary']};
         border: none;
-        padding: 8px 8px;
+        padding: 0px;
         font-size: 10px;
         border-radius: 4px;
-        min-height: 35px;
+        min-height: 30px;
+        max-height: 30px;
+        min-width: 75px;
+        max-width: 75px;
     }}
     QPushButton#complete_button:hover {{
         background-color: #3d9e6e;
@@ -96,10 +109,13 @@ VIEW_STYLE = f"""
         background-color: {COLOURS['danger']};
         color: {COLOURS['text_primary']};
         border: none;
-        padding: 8px 8px;
+        padding: 0px;
         font-size: 10px;
         border-radius: 4px;
-        min-height: 35px;
+        min-height: 30px;
+        max-height: 30px;
+        min-width: 75px;
+        max-width: 75px;
     }}
     QPushButton#delete_button:hover {{
         background-color: #c0392b;
@@ -210,7 +226,8 @@ class TaskView(QWidget):
         self.table.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
         self.table.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
         self.table.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeToContents)
-        self.table.horizontalHeader().setSectionResizeMode(5, QHeaderView.Stretch)
+        self.table.horizontalHeader().setSectionResizeMode(5, QHeaderView.Fixed)
+        self.table.horizontalHeader().resizeSection(5, 280)
         self.table.setEditTriggers(QTableWidget.NoEditTriggers)
         self.table.setSelectionBehavior(QTableWidget.SelectRows)
         self.table.verticalHeader().setVisible(False)
@@ -242,7 +259,7 @@ class TaskView(QWidget):
 
             row = self.table.rowCount()
             self.table.insertRow(row)
-            self.table.setRowHeight(row, 60)
+            self.table.setRowHeight(row, 50)
             self.table.setItem(row, 0, QTableWidgetItem(task_name))
             self.table.setItem(row, 1, QTableWidgetItem(course_name))
             self.table.setItem(row, 2, QTableWidgetItem(due_date))
@@ -251,6 +268,7 @@ class TaskView(QWidget):
 
             # Action buttons
             actions_widget = QWidget()
+            actions_widget.setObjectName("actions_widget")
             actions_layout = QHBoxLayout(actions_widget)
             actions_layout.setContentsMargins(4, 4, 4, 4)
             actions_layout.setSpacing(6)
@@ -258,25 +276,25 @@ class TaskView(QWidget):
             edit_btn = QPushButton("Edit")
             edit_btn.setObjectName("edit_button")
             edit_btn.clicked.connect(lambda checked, tid=task_id: self._open_edit_dialog(tid))
+            actions_layout.addWidget(edit_btn)
 
-            start_btn = QPushButton("Start")
-            start_btn.setObjectName("start_button")
-            start_btn.clicked.connect(lambda checked, tid=task_id, tname=task_name: self._apply_filter("In Progress") if task_logic.update_task(tid, status="In Progress")[0] else QMessageBox.warning(self, "Error", "Failed to update task status."))
-            start_btn.setEnabled(status == "Not Started")
-
-            complete_btn = QPushButton("Complete")
-            complete_btn.setObjectName("complete_button")
-            complete_btn.clicked.connect(lambda checked, tid=task_id, tname=task_name: self._mark_complete(tid, tname))
-            complete_btn.setEnabled(status != "Done")
+            # Show Start or Complete based on status
+            if status == "Not Started":
+                start_btn = QPushButton("Start")
+                start_btn.setObjectName("start_button")
+                start_btn.clicked.connect(lambda checked, tid=task_id, tname=task_name: self._mark_in_progress(tid, tname))
+                actions_layout.addWidget(start_btn)
+            elif status == "In Progress":
+                complete_btn = QPushButton("Complete")
+                complete_btn.setObjectName("complete_button")
+                complete_btn.clicked.connect(lambda checked, tid=task_id, tname=task_name: self._mark_complete(tid, tname))
+                actions_layout.addWidget(complete_btn)
 
             delete_btn = QPushButton("Delete")
             delete_btn.setObjectName("delete_button")
             delete_btn.clicked.connect(lambda checked, tid=task_id, tname=task_name: self._delete_task(tid, tname))
-
-            actions_layout.addWidget(edit_btn)
-            actions_layout.addWidget(start_btn)
-            actions_layout.addWidget(complete_btn)
             actions_layout.addWidget(delete_btn)
+
             actions_layout.addStretch()
             self.table.setCellWidget(row, 5, actions_widget)
 
@@ -290,16 +308,30 @@ class TaskView(QWidget):
     def _mark_in_progress(self, task_id, task_name):
         """Mark a task as in progress."""
         reply = QMessageBox.question(
-            self, "Start TasK",
-            f"Mark '{task_name}' as in progress?",
+            self, "Start Task",
+            f"Mark '{task_name}' as In Progress?",
             QMessageBox.Yes | QMessageBox.No
         )
         if reply == QMessageBox.Yes:
-            result, error = task_logic.update_task(task_id, status="In Progress")
+            # Get existing task data first
+            task, error = task_logic.get_task_by_id(task_id)
+            if error:
+                QMessageBox.warning(self, "Error", error)
+                return
+            result, error = task_logic.update_task(
+                task_id,
+                task_name=task[2],
+                due_date=task[3],
+                task_description=task[4],
+                priority=task[5],
+                estimated_hours=task[6],
+                status="In Progress",
+                course_id=task[1]
+            )
             if error:
                 QMessageBox.warning(self, "Error", error)
             else:
-                QMessageBox.information(self, "Success", f"'{task_name}' is now in progress!")
+                QMessageBox.information(self, "Success", f"'{task_name}' is now In Progress!")
                 self._load_tasks(filter_status=self.current_filter)
 
     def _mark_complete(self, task_id, task_name):
