@@ -9,6 +9,7 @@ from PySide6.QtCore import Qt
 from datetime import datetime, timedelta
 from logic import planner_logic
 from logic import task_logic
+from logic import course_logic
 
 COLOURS = {
     "background":     "#1e1e2e",
@@ -81,6 +82,14 @@ VIEW_STYLE = f"""
         color: {COLOURS['text_primary']};
         padding: 8px;
         background-color: {COLOURS['accent']};
+        border-radius: 4px;
+    }}
+    QLabel#day_header_today {{
+        font-size: 13px;
+        font-weight: bold;
+        color: {COLOURS['text_primary']};
+        padding: 8px;
+        background-color: {COLOURS['success']};
         border-radius: 4px;
     }}
     QLabel#day_total {{
@@ -223,13 +232,22 @@ class PlannerView(QWidget):
         column.setObjectName("day_column")
         column.setMinimumWidth(140)
 
+        # Check if this column is today
+        today = datetime.today().strftime("%A")
+        is_today = day == today
+
         layout = QVBoxLayout(column)
         layout.setContentsMargins(8, 8, 8, 8)
         layout.setSpacing(6)
 
-        # Day header
-        header = QLabel(day)
-        header.setObjectName("day_header")
+        # Calculate date for this day
+        day_index = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].index(day)
+        day_date = self.current_week_start + timedelta(days=day_index)
+        day_date_str = day_date.strftime("%d/%m")
+
+        # Day header - highlight if today
+        header = QLabel(f"{day[:3]}\n{day_date_str}")
+        header.setObjectName("day_header_today" if is_today else "day_header")
         header.setAlignment(Qt.AlignCenter)
         layout.addWidget(header)
 
@@ -249,13 +267,25 @@ class PlannerView(QWidget):
             task, _ = task_logic.get_task_by_id(task_id)
             task_name = task[2] if task else "Unknown Task"
 
+            # Get course name is task has one
+            course_name = ""
+            if task and task[1]:
+                course, _ = course_logic.get_all_courses()
+                course_map = {c[0]: c[1] for c in course}
+                course_name = course_map.get(task[1], "")
+
             # Task card
             card_widget = QWidget()
             card_layout = QVBoxLayout(card_widget)
             card_layout.setContentsMargins(4, 4, 4, 4)
             card_layout.setSpacing(2)
 
-            task_label = QLabel(f"{task_name}\n{hours or 0} hrs")
+            # Build task label text
+            task_text = f"{task_name}\n{hours or 0} hrs"
+            if course_name:
+                task_text = f"\n{course_name}"
+
+            task_label = QLabel(task_text)
             task_label.setObjectName("task_card")
             task_label.setWordWrap(True)
             card_layout.addWidget(task_label)

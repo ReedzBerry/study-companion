@@ -166,7 +166,9 @@ VIEW_STYLE = f"""
         color: {COLOURS['text_primary']};
         border: 1px solid {COLOURS['accent']};
         padding: 6px;
-        border-radius: 4px;
+        border-radius: 4px;'
+        min-height: 35px;
+        font-size: 13px;
     }}
     QDateEdit {{
         background-color: {COLOURS['card']};
