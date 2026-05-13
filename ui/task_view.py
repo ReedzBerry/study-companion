@@ -166,7 +166,7 @@ VIEW_STYLE = f"""
         color: {COLOURS['text_primary']};
         border: 1px solid {COLOURS['accent']};
         padding: 6px;
-        border-radius: 4px;'
+        border-radius: 4px;
         min-height: 35px;
         font-size: 13px;
     }}
@@ -189,7 +189,7 @@ class TaskView(QWidget):
 
     def _build_ui(self):
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(30,30,30,30)
+        layout.setContentsMargins(20,20,20,20)
         layout.setSpacing(20)
 
         # Header row - title and add button
@@ -229,7 +229,9 @@ class TaskView(QWidget):
         self.table.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
         self.table.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeToContents)
         self.table.horizontalHeader().setSectionResizeMode(5, QHeaderView.Fixed)
-        self.table.horizontalHeader().resizeSection(5, 280)
+        self.table.horizontalHeader().resizeSection(5, 250)
+        self.table.setMinimumWidth(800)
+        self.table.horizontalHeader().setMinimumSectionSize(150)
         self.table.setEditTriggers(QTableWidget.NoEditTriggers)
         self.table.setSelectionBehavior(QTableWidget.SelectRows)
         self.table.verticalHeader().setVisible(False)
