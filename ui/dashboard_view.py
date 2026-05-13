@@ -1,5 +1,5 @@
 from PySide6.QtWidgets import (
-    QPushButton, QSizePolicy, QWidget, QVBoxLayout, QHBoxLayout,
+    QMessageBox, QPushButton, QSizePolicy, QWidget, QVBoxLayout, QHBoxLayout,
     QLabel, QScrollArea, QFrame
 )
 from PySide6.QtCore import Qt
@@ -162,6 +162,11 @@ class DashboardView(QWidget):
         refresh_btn.clicked.connect(self._load_dashboard)
         header_layout.addWidget(refresh_btn)
 
+        seed_btn = QPushButton("Reset Demo Data")
+        seed_btn.setObjectName("nav_button")
+        seed_btn.clicked.connect(self._load_demo_data)
+        header_layout.addWidget(seed_btn)
+
         # Last updated label
         self.updated_label = QLabel()
         self.updated_label.setObjectName("empty_label")
@@ -220,7 +225,21 @@ class DashboardView(QWidget):
                     nested_widget = nested_item.widget()
                     if nested_widget:
                         nested_widget.setParent(None)
-                
+
+    #TODO - Remove before submission
+    def _load_demo_data(self):
+        """Clear database and load demo data."""
+        reply = QMessageBox.question(
+            self, "Load Demo Data",
+        "This will DELETE all existing data and replace it with demo data.\n\nAre you sure?",
+        QMessageBox.Yes | QMessageBox.No)
+        if reply == QMessageBox.Yes:
+            try:
+                import seed_data
+                seed_data.clear_database()
+                QMessageBox.information(self, "Success","Demo data loaded successfully!")    
+            except Exception as e:
+                QMessageBox.critical(self, "Error", f"Failed to load demo data: {str(e)}")
 
     def _load_dashboard(self):
         """Load all dashboard data."""

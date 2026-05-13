@@ -270,8 +270,8 @@ class PlannerView(QWidget):
             # Get course name is task has one
             course_name = ""
             if task and task[1]:
-                course, _ = course_logic.get_all_courses()
-                course_map = {c[0]: c[1] for c in course}
+                courses = course_logic.get_all_courses()
+                course_map = {c[0]: c[1] for c in courses}
                 course_name = course_map.get(task[1], "")
 
             # Task card
