@@ -47,6 +47,13 @@ VIEW_STYLE = f"""
         border: none;
     }}
 
+    QScrollArea {{
+        background-color: transparent;
+        border: none;
+    }}
+    QScrollArea > QWidget > QWidget {{
+        background-color: transparent;
+    }}
     QLabel#view_title {{
         font-size: 22px;
         font-weight: bold;
@@ -113,16 +120,16 @@ VIEW_STYLE = f"""
     }}
 
     QPushButton#nav_button {{
-    background-color: {COLOURS['card']};
-    color: {COLOURS['text_primary']};
-    border: none;
-    padding: 6px 12px;
-    font-size: 13px;
-    border-radius: 4px;
+        background-color: {COLOURS['card']};
+        color: {COLOURS['text_primary']};
+        border: none;
+        padding: 6px 12px;
+        font-size: 13px;
+        border-radius: 4px;
     }}
 
     QPushButton#nav_button:hover {{
-    background-color: {COLOURS['accent']};
+        background-color: {COLOURS['accent']};
     }}
 """
 
@@ -264,12 +271,23 @@ class DashboardView(QWidget):
 
         upcoming, _ = dashboard_logic.get_upcoming_tasks()
 
+        # Scrollable area if too many tasks
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setFrameShape(QFrame.NoFrame)
+        scroll.setMaximumHeight(180)
+
+        scroll_content = QWidget()
+        scroll_layout = QVBoxLayout(scroll_content)
+        scroll_layout.setContentsMargins(0, 0, 0, 0)
+        scroll_layout.setSpacing(4)
+
         if not upcoming:
             empty = QLabel("No upcoming tasks 🎉")
             empty.setObjectName("empty_label")
-            layout.addWidget(empty)
+            scroll_layout.addWidget(empty)
         else:
-            for task in upcoming[:5]:  # Show max 5
+            for task in upcoming:
                 task_name = task[2]
                 due_date = task[3][:10] if task[3] else "—"
                 priority = task[5]
@@ -277,16 +295,20 @@ class DashboardView(QWidget):
                 task_label = QLabel(f"• {task_name}")
                 task_label.setObjectName("task_item")
                 task_label.setWordWrap(True)
-                layout.addWidget(task_label)
+                scroll_layout.addWidget(task_label)
 
                 date_label = QLabel(f"  Due: {due_date} — {priority} priority")
                 date_label.setObjectName("task_date")
-                layout.addWidget(date_label)
+                scroll_layout.addWidget(date_label)
 
             if len(upcoming) > 5:
                 more = QLabel(f"  + {len(upcoming) - 5} more...")
                 more.setObjectName("empty_label")
-                layout.addWidget(more)
+                scroll_layout.addWidget(more)
+
+        scroll_layout.addStretch()
+        scroll.setWidget(scroll_content)
+        layout.addWidget(scroll)
 
         layout.addStretch()
 
@@ -305,10 +327,20 @@ class DashboardView(QWidget):
 
         overdue, _ = dashboard_logic.get_overdue_tasks()
 
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setFrameShape(QFrame.NoFrame)
+        scroll.setMaximumHeight(180)
+
+        scroll_content = QWidget()
+        scroll_layout = QVBoxLayout(scroll_content)
+        scroll_layout.setContentsMargins(0, 0, 0, 0)
+        scroll_layout.setSpacing(4)
+
         if not overdue:
             empty = QLabel("No overdue tasks 🎉")
             empty.setObjectName("empty_label")
-            layout.addWidget(empty)
+            scroll_layout.addWidget(empty)
         else:
             for task in overdue[:5]:  # Show max 5
                 task_name = task[2]
@@ -317,16 +349,20 @@ class DashboardView(QWidget):
                 task_label = QLabel(f"• {task_name}")
                 task_label.setObjectName("overdue_item")
                 task_label.setWordWrap(True)
-                layout.addWidget(task_label)
+                scroll_layout.addWidget(task_label)
 
                 date_label = QLabel(f"  Was due: {due_date}")
                 date_label.setObjectName("task_date")
-                layout.addWidget(date_label)
+                scroll_layout.addWidget(date_label)
 
             if len(overdue) > 5:
                 more = QLabel(f"  + {len(overdue) - 5} more...")
                 more.setObjectName("empty_label")
-                layout.addWidget(more)
+                scroll_layout.addWidget(more)
+
+        scroll_layout.addStretch()
+        scroll.setWidget(scroll_content)
+        layout.addWidget(scroll)
 
         layout.addStretch()
 

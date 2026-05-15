@@ -281,7 +281,7 @@ class PlannerView(QWidget):
             card_layout.setSpacing(2)
 
             # Build task label text
-            task_text = f"{task_name}\n{hours or 0} hrs"
+            task_text = f"{task_name}\n{hours if hours else 0} hrs"
             if course_name:
                 task_text = f"\n{course_name}"
 

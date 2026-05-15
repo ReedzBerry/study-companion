@@ -22,11 +22,17 @@ def create_weekly_plan(week_start):
 def get_or_create_plan(week_start):
     """Get the current week's plan or create one if it doesn't exist."""
     existing_plan = plans_dao.get_plan_by_week(week_start)
-    
     if existing_plan:
-        return existing_plan, None
+        return existing_plan, None  # Return the plan ID
     
-    return create_weekly_plan(week_start)
+    # Create a new plan and fetch the full row to return consistently
+    plan_id, error = create_weekly_plan(week_start)
+    if error: 
+        return None, error
+    
+    # Fetch the newly created plan to return plan as a full tuple
+    new_plan = plans_dao.get_plan_by_week(week_start)
+    return new_plan, None
 
 def add_plan_item(plan_id, task_id, scheduled_day, hours_planned):
     """Validate and add a task to a weekly plan."""
